@@ -19,6 +19,7 @@ The site presents the proposed 20-course catalogue with search and category filt
 - HTML5 for semantic page structure
 - CSS for responsive layout and visual styling
 - Browser-native JavaScript for filtering and course details
+- A browser-based course assistant backed by SQLite WASM full-text search
 - Browser `localStorage` for device-local sign-ups
 - JSON for the course catalogue
 - GitHub Actions and GitHub Pages for automated static hosting
@@ -35,6 +36,8 @@ python -m http.server 8000 --directory dist
 
 Open [http://localhost:8000](http://localhost:8000). Python 3 is needed for this example; any static HTTP server can serve the same folder.
 
+To rebuild the course-guide database and browser assets, install the Node dependencies with `npm install` and run `npm run build:kb`. Run `npm run eval` to check retrieval against the golden course-assistant questions.
+
 ## Architecture
 
 ```text
@@ -45,6 +48,13 @@ GitHub repository
 │   ├── index.html                Page, styles, interactions, and course rendering
 │   ├── admin.html                Local sign-up list and CSV export
 │   └── courses.json              Catalogue records fetched by the page
+├── js/
+│   ├── chat.js                   Browser chat panel and SQLite WASM loader
+│   └── rag.js                    Shared retrieval and structured course search
+├── scripts/
+│   ├── build-kb.mjs              Builds academy.db and copies browser assets
+│   └── eval.mjs                  Scores retrieval against golden questions
+├── eval/golden-questions.csv     Retrieval evaluation cases
 ├── .agents/commands/
 │   └── publish-to-github.md      Reusable publishing procedure
 └── market-brief.md               Website positioning and conversion notes

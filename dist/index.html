@@ -70,7 +70,7 @@
         const shown=courses.filter(c=>(activeFilter==='all'||c.cat===activeFilter)&&(!q||`${c.title} ${c.summary} ${c.cat} ${c.level} ${c.campus}`.toLowerCase().includes(q)));
         count.textContent=`Showing ${shown.length} of ${courses.length} classes`;
         if(!shown.length){grid.innerHTML='<div class="empty">No classes match that search. Try another course or clear the search.</div>';return;}
-        grid.innerHTML=shown.map(c=>`<article class="course-card"><img class="course-image" src="${img(c.img)}" alt="${esc(c.title)}" loading="lazy"><div class="card-body"><div class="card-top"><span class="badge">${esc(c.level)} · ${esc(c.cat==='Bakery'?'Baking':'Cooking')}</span><span class="duration">${c.weeks===1?'1 week':`${esc(c.weeks)} weeks`}</span></div><h3>${esc(c.title)}</h3><p class="summary">${esc(c.summary)}</p><div class="card-meta"><span class="campus">${esc(c.campus)}</span><span class="price">S$${Number(c.fee).toLocaleString('en-SG')}</span></div><div class="card-actions"><div class="card-actions-row"><button class="details-button" type="button" data-course="${esc(c.code)}">View class details</button><span class="next-intake">${nextDate(c)?`Next intake · ${esc(nextDate(c))}`:'Check upcoming dates'}</span></div><button class="signup-button" type="button" data-signup="${esc(c.code)}">Sign up</button></div></div></article>`).join('');
+        grid.innerHTML=shown.map(c=>`<article class="course-card" id="course-${esc(c.code)}"><img class="course-image" src="${img(c.img)}" alt="${esc(c.title)}" loading="lazy"><div class="card-body"><div class="card-top"><span class="badge">${esc(c.level)} · ${esc(c.cat==='Bakery'?'Baking':'Cooking')}</span><span class="duration">${c.weeks===1?'1 week':`${esc(c.weeks)} weeks`}</span></div><h3>${esc(c.title)}</h3><p class="summary">${esc(c.summary)}</p><div class="card-meta"><span class="campus">${esc(c.campus)}</span><span class="price">S$${Number(c.fee).toLocaleString('en-SG')}</span></div><div class="card-actions"><div class="card-actions-row"><button class="details-button" type="button" data-course="${esc(c.code)}">View class details</button><span class="next-intake">${nextDate(c)?`Next intake · ${esc(nextDate(c))}`:'Check upcoming dates'}</span></div><button class="signup-button" type="button" data-signup="${esc(c.code)}">Sign up</button></div></div></article>`).join('');
       }
       let signupCourse=null;
       const fieldIds=['signup-intake','signup-name','signup-email','signup-mobile','signup-consent'];
@@ -133,6 +133,6 @@
       fetch('./courses.json').then(r=>{if(!r.ok)throw new Error('Course list unavailable');return r.json();}).then(data=>{if(!Array.isArray(data))throw new Error('Invalid course list');courses=data;render();}).catch(()=>{count.textContent='The course list could not be loaded.';grid.innerHTML='<div class="empty">Please refresh the page to try again.</div>';});
     })();
   </script>
-  <script type="module" src="./chat.js"></script>
+  <script type="module" src="./js/chat.js"></script>
 </body>
 </html>

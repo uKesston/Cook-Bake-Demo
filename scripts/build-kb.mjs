@@ -86,13 +86,17 @@ try {
   mkdirSync(dataDir, { recursive: true });
   writeFileSync(outputPath, sqlite3.capi.sqlite3_js_db_export(db));
   const browserSqliteDir = path.join(distDir, 'vendor', 'sqlite-wasm');
+  const browserJsDir = path.join(distDir, 'js');
   mkdirSync(path.join(distDir, 'data'), { recursive: true });
+  mkdirSync(browserJsDir, { recursive: true });
   mkdirSync(browserSqliteDir, { recursive: true });
   copyFileSync(outputPath, path.join(distDir, 'data', 'academy.db'));
   copyFileSync(path.join(root, 'node_modules', '@sqlite.org', 'sqlite-wasm', 'dist', 'index.mjs'),
     path.join(browserSqliteDir, 'index.mjs'));
   copyFileSync(path.join(root, 'node_modules', '@sqlite.org', 'sqlite-wasm', 'dist', 'sqlite3.wasm'),
     path.join(browserSqliteDir, 'sqlite3.wasm'));
+  copyFileSync(path.join(root, 'js', 'rag.js'), path.join(browserJsDir, 'rag.js'));
+  copyFileSync(path.join(root, 'js', 'chat.js'), path.join(browserJsDir, 'chat.js'));
   console.log(`Built ${path.relative(root, outputPath)}: ${chunks.length} chunks, ${courses.length} courses.`);
 } finally {
   db.close();
