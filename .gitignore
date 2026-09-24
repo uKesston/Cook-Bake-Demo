@@ -1,6 +1,9 @@
 # Generated deployment bundles
 *.zip
 
+# Installed Node dependencies
+node_modules/
+
 # Local environment files and credentials
 .env
 .env.*
