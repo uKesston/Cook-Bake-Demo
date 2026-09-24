@@ -6,19 +6,20 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?logo=javascript&logoColor=222)
 ![GitHub Actions](https://img.shields.io/badge/deploy-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
 
-A polished catalogue site for Cook & Bake Academy Singapore, featuring hands-on cooking and baking classes, course details, and two campus locations.
+A polished catalogue site for Cook & Bake Academy Singapore, featuring hands-on cooking and baking classes, course details, and two campus locations. Course sign-ups stay in the visitor's browser; no backend or payment processing is configured.
 
 **Live site:** [ukesston.github.io/Cook-Bake-Demo](https://ukesston.github.io/Cook-Bake-Demo/)
 
 ## Overview
 
-The site presents the proposed 20-course catalogue with search and category filters. Each course card shows its fee, course length, campus, and next listed intake. A details dialog provides learning outcomes, class timing, upcoming dates, what to bring, and allergen information. Course data is kept separately from the page so catalogue updates do not require rewriting the interface.
+The site presents the proposed 20-course catalogue with search and category filters. Each course card shows its fee, course length, campus, and next listed intake. A details dialog provides learning outcomes, class timing, upcoming dates, what to bring, and allergen information. A shared sign-up dialog stores entries in browser `localStorage`; `admin.html` lists and exports entries stored in that same browser. Course data is kept separately from the page so catalogue updates do not require rewriting the interface.
 
 ## Technology
 
 - HTML5 for semantic page structure
 - CSS for responsive layout and visual styling
 - Browser-native JavaScript for filtering and course details
+- Browser `localStorage` for device-local sign-ups
 - JSON for the course catalogue
 - GitHub Actions and GitHub Pages for automated static hosting
 
@@ -42,6 +43,7 @@ GitHub repository
 ├── .openai/hosting.json          Sites source metadata
 ├── dist/
 │   ├── index.html                Page, styles, interactions, and course rendering
+│   ├── admin.html                Local sign-up list and CSV export
 │   └── courses.json              Catalogue records fetched by the page
 ├── .agents/commands/
 │   └── publish-to-github.md      Reusable publishing procedure
@@ -49,6 +51,8 @@ GitHub repository
 ```
 
 The browser loads `dist/index.html`, fetches `dist/courses.json` relative to that page, and renders the catalogue client-side. The Pages workflow checks out `main`, packages `dist/`, then publishes it to GitHub Pages. It runs on pushes to `main` and can also be started manually from Actions.
+
+Sign-ups are available only in the browser and device where they were submitted. `dist/admin.html` reads the same-origin `cb_signups` storage key and exports the columns in the signup CSV format. This static site does not collect entries centrally.
 
 ## Publishing
 

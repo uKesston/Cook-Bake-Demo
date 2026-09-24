@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbf7f1">
+  <title>Sign-up exports — Cook &amp; Bake Academy</title>
+  <style>
+    :root{--cream:#fbf7f1;--paper:#fffdf9;--ink:#2b211b;--muted:#71645b;--crust:#b5652d;--basil:#3f6b4a;--line:#e8ded2;--serif:Georgia,'Times New Roman',serif;--sans:system-ui,-apple-system,'Segoe UI',sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.55 var(--sans)}.admin-wrap{max-width:1180px;margin:0 auto;padding:36px 24px}.admin-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:25px}.admin-header h1{font:700 clamp(32px,5vw,48px)/1.1 var(--serif);margin:0}.button{display:inline-flex;align-items:center;justify-content:center;background:var(--crust);color:white;border:0;border-radius:4px;padding:12px 18px;font:700 14px var(--sans);text-decoration:none;cursor:pointer}.button:hover{background:#8f4b1f}.button:focus-visible,a:focus-visible{outline:3px solid #3f6b4a88;outline-offset:2px}.admin-note{max-width:760px;color:var(--muted);font-size:13px;margin:0 0 18px}.admin-message{margin:0 0 15px;color:var(--basil);font-weight:750}.admin-table-wrap{overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:5px}.admin-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}.admin-table th,.admin-table td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line)}.admin-table th{background:#efe6db}.admin-empty{padding:22px;color:var(--muted)}.admin-footer{margin-top:20px;font-size:13px}.admin-footer a{color:var(--ink)}@media(max-width:600px){.admin-wrap{padding:24px 15px}.admin-header{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main class="admin-wrap">
+    <header class="admin-header"><h1>Sign-up exports</h1><button class="button" id="export-csv" type="button">Export CSV</button></header>
+    <p class="admin-note">This page can read only sign-ups saved in this browser on this device. The site has no backend; entries are not shared across browsers or devices. Keep this page and its exported files private because they contain personal information.</p>
+    <p class="admin-message" id="admin-message" role="status" aria-live="polite"></p>
+    <div class="admin-table-wrap"><table class="admin-table"><thead id="signups-head"></thead><tbody id="signups-body"></tbody></table><p class="admin-empty" id="signups-empty" hidden>No sign-ups are saved in this browser yet.</p></div>
+    <p class="admin-footer"><a href="./index.html">← Return to the course catalogue</a></p>
+  </main>
+  <script>
+    (()=>{
+      const columns=['ref','submitted','course_code','course_title','intake','full_name','email','mobile','experience','allergies','marketing_opt_in','paid'];
+      const labels={ref:'Reference',submitted:'Submitted',course_code:'Course code',course_title:'Course',intake:'Intake',full_name:'Full name',email:'Email',mobile:'Mobile',experience:'Experience',allergies:'Allergies',marketing_opt_in:'Marketing opt-in',paid:'Paid'};
+      const head=document.getElementById('signups-head'),body=document.getElementById('signups-body'),empty=document.getElementById('signups-empty'),message=document.getElementById('admin-message'),exportButton=document.getElementById('export-csv');
+      let entries=[];
+      function load(){try{const value=JSON.parse(localStorage.getItem('cb_signups')||'[]');entries=Array.isArray(value)?value:[];message.textContent=`${entries.length} sign-up${entries.length===1?'':'s'} saved in this browser.`;}catch{entries=[];message.textContent='Saved sign-ups could not be read from this browser.';}}
+      function cell(value){const td=document.createElement('td');td.textContent=String(value??'');return td;}
+      function render(){const tr=document.createElement('tr');columns.forEach(key=>{const th=document.createElement('th');th.scope='col';th.textContent=labels[key];tr.append(th);});head.replaceChildren(tr);body.replaceChildren();entries.forEach(item=>{const row=document.createElement('tr');columns.forEach(key=>row.append(cell(item[key])));body.append(row);});empty.hidden=entries.length>0;}
+      function csvCell(value,key){let text=String(value??'');if(/^[=+@\-\t\r]/.test(text)&&!(key==='mobile'&&text.startsWith('+65 ')))text="'"+text;return`"${text.replaceAll('"','""')}"`;}
+      exportButton.addEventListener('click',()=>{const rows=[columns.join(','),...entries.map(item=>columns.map(key=>csvCell(item[key],key)).join(','))];const blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`signups-${new Date().toISOString().slice(0,10)}.csv`;document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);message.textContent=`Exported ${entries.length} sign-up${entries.length===1?'':'s'} as CSV.`;});
+      load();render();
+    })();
+  </script>
+</body>
+</html>
